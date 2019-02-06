@@ -5,13 +5,15 @@
     "prettier/prettier": [
       "error",
       {
-        "singleQuote": true,
+        // "singleQuote": false,
+
         "printWidth": 120,
         "trailingComma": "es5",
         "tabWidth": 2,
         "semi": false
       }
     ],
+    "quotes": ["error", "backtick"],
     "no-unused-vars": "off",
     "no-console": "off"
   },
@@ -21,6 +23,7 @@
     "customElements": false,
     "CustomEvent": false,
     "require": false,
-    "process": false
+    "process": false,
+    "__dirname": false
   }
 }

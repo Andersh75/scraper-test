@@ -1,11 +1,11 @@
 // const request = require("request");
-const logger = require('morgan')
-const express = require('express')
-var request = require('request')
-var cheerio = require('cheerio')
-const axios = require('axios')
-let fs = require('fs')
-let path = require('path')
+const logger = require(`morgan`)
+const express = require(`express`)
+var request = require(`request`)
+var cheerio = require(`cheerio`)
+const axios = require(`axios`)
+let fs = require(`fs`)
+let path = require(`path`)
 
 // Create an Express application
 const app = express()
@@ -13,45 +13,35 @@ const app = express()
 // Configure the app port
 const port = process.env.PORT || 3000
 
-app.set('port', port)
+app.set(`port`, port)
 
 // Load middlewares
-app.use(logger('dev'))
+app.use(logger(`dev`))
 
-app.get('/bilder/', (req, res, next) => {
-  axios.get('https://sv.wikipedia.org/wiki/Kommunvapen_i_Sverige').then(response => {
+app.get(`/bilder/`, (req, res, next) => {
+  axios.get(`https://sv.wikipedia.org/wiki/Kommunvapen_i_Sverige`).then(response => {
     if (response.status === 200) {
       const html = response.data
       const $ = cheerio.load(html)
       let h2text = []
-      $('img').each(function(i, e) {
-        h2text[i] = { src: $(this).attr('src') }
-        // let img_url = $(this).attr('href')
+      $(`img`).each(function(i, e) {
+        h2text[i] = { src: $(this).attr(`src`) }
         try {
-          if (i < 290) request('https:' + $(this).attr('src')).pipe(fs.createWriteStream('image' + i + '.png'))
+          if (i < 290)
+            request(`https:` + $(this).attr(`src`)).pipe(
+              fs.createWriteStream(__dirname + `/public/images/image` + i + `.png`)
+            )
         } catch (error) {
           console.log(error)
         }
       })
-
-      // let imgs = $('.image').toArray()
-      // console.log('Downloading...')
-      // imgs.forEach(function(img) {
-      //   //console.log(img.attribs.src)
-      //   process.stdout.write('.')
-      //   let img_url = im..attr().src
-      //   console.log(img_url)
-      //   if (/^https?:\/\//.test(img_url)) {
-      //     let img_name = path.basename(img_url)
-      //     request(img_url).pipe(fs.createWriteStream(img_name))
-      //   }
-      // })
-      // console.log('Done!')
-
-      // console.log(h2text)
       res.json(h2text)
     }
   })
+})
+
+app.get(`/bilder/:id`, (req, res, next) => {
+  res.download(path.join(__dirname, `/public/images/`, `image${req.params.id}.png`))
 })
 
 // const rp = require("request-promise");
