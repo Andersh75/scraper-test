@@ -26,10 +26,20 @@ app.get(`/bilder/`, (req, res, next) => {
       let h2text = []
       $(`img`).each(function(i, e) {
         h2text[i] = { src: $(this).attr(`src`) }
+
+        let name = $(this)
+          .parent()
+          .parent()
+          .parent()
+          .next()
+          .find(`a`)
+          .text()
+
+        console.log(name)
         try {
-          if (i < 290)
+          if (i < 290 && i > 0)
             request(`https:` + $(this).attr(`src`)).pipe(
-              fs.createWriteStream(__dirname + `/public/images/image` + i + `.png`)
+              fs.createWriteStream(__dirname + `/public/images/` + name + `.png`)
             )
         } catch (error) {
           console.log(error)
@@ -41,7 +51,7 @@ app.get(`/bilder/`, (req, res, next) => {
 })
 
 app.get(`/bilder/:id`, (req, res, next) => {
-  res.download(path.join(__dirname, `/public/images/`, `image${req.params.id}.png`))
+  res.download(path.join(__dirname, `/public/images/`, `${req.params.id}.png`))
 })
 
 // const rp = require("request-promise");
